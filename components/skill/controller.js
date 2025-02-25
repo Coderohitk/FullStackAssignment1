@@ -20,7 +20,7 @@ const addNewSkill = async (request, response) => {
     response.redirect("../list",);
 }
 const getSkillAPI = async (request, response) => {
-    let skillList = await skillModel.getSkills();
+    let skillList = await skillModal.getSkills();
     response.json(skillList);
   };
 const deleteSkillById = async (request, response) => {
