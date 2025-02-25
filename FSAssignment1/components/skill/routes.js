@@ -6,8 +6,9 @@ const { listSkills,
     addNewSkill,
     deleteSkillById,
     showUpdateForm,
-    updateSkill } = require("./controller");
-
+    updateSkill,
+    getSkillAPI } = require("./controller");
+router.get("/api",getSkillAPI);
 router.get("/list", listSkills);
 router.get("/add", showAddForm);
 router.post("/add", addNewSkill);

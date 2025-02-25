@@ -19,7 +19,10 @@ const addNewSkill = async (request, response) => {
     console.log(result);
     response.redirect("../list",);
 }
-
+const getSkillAPI = async (request, response) => {
+    let skillList = await skillModel.getProject();
+    response.json(skillList);
+  };
 const deleteSkillById = async (request, response) => {
     let id = request.params.id;
     await skillModal.deleteSkill(id);
@@ -52,5 +55,6 @@ module.exports = {
     addNewSkill,
     deleteSkillById,
     showUpdateForm,
-    updateSkill
+    updateSkill,
+    getSkillAPI
 };
