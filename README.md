@@ -45,8 +45,8 @@ This project is a portfolio web application built using Express.js and MongoDB, 
    - You can add, update, or delete projects and skills.
 
 2. **Interacting with the API**:
-   - You can access the projects API at `https://fullstackassignment1-ew61.onrender.com/api/projects`.
-   - You can access the skills API at `https://fullstackassignment1-ew61.onrender.com/api/skills`.
+   - You can access the projects API at `https://fullstackassignment1-ew61.onrender.com/project/api`.
+   - You can access the skills API at `https://fullstackassignment1-ew61.onrender.com/skill/api`.
 
 ## Installation Instructions
 
