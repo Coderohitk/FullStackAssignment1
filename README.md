@@ -52,5 +52,5 @@ This project is a portfolio web application built using Express.js and MongoDB, 
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-username/FullStackAssignment1.git
+   git clone https://github.com/coderohitk/FullStackAssignment1.git
    cd FullStackAssignment1
