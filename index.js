@@ -6,11 +6,12 @@ const dotenv = require("dotenv");
 
 //load the environment variables from .env
 dotenv.config();
-app.use(cors());
+
 
 //set up the Express app
 const app = express();
 const port = process.env.PORT || "8888";
+app.use(cors());
 
 //set up application template engine
 app.set("views", path.join(__dirname, "views")); //the first "views" is the setting name
