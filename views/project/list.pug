@@ -9,6 +9,11 @@ block layout-content
 
     each project in projects
       .project-item
+
+        // ✅ Show image if exists
+        if project.imageUrl
+          img(src=project.imageUrl, alt=project.name, width="300", class="img-thumbnail mb-2")
+
         h2= project.name
         p= project.description
         p 
@@ -17,6 +22,7 @@ block layout-content
         p 
           strong Link: 
           a(href=project.link, target="_blank")= project.link
-      .button-container
-        a.btn-edit(href=`/project/update/${project._id}`) Edit
-        a.btn-delete(href=`/project/delete/${project._id}`, onclick="return confirm('Are you sure?')") Delete
+
+        .button-container
+          a.btn-edit(href=`/project/update/${project._id}`) Edit
+          a.btn-delete(href=`/project/delete/${project._id}`, onclick="return confirm('Are you sure?')") Delete

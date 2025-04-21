@@ -5,9 +5,11 @@ const db = require("../../db");
 const ProjectSchema = new mongoose.Schema({
   name: String,
   description: String,
-  technology: [String], // Array of technologies
-  link: String           // Link to the project or GitHub repository
+  technology: [String],
+  link: String,
+  imageUrl: String // ✅ New field to store image path
 });
+
 
 const Project = mongoose.model("Project", ProjectSchema); // Create the model
 
@@ -41,17 +43,20 @@ async function getProject() {
 }
 
 // Add a new project to the database
-async function addProject(name, description, technology, link) {
+async function addProject(name, description, technology, link, imageFile) {
   await db.connect();
   const newProject = new Project({
     name,
     description,
-    technology: technology.split(',').map(item => item.trim()), // Convert comma-separated string to array
-    link
+    technology: technology.split(',').map(item => item.trim()),
+    link,
+    imageUrl: imageFile || '' // ✅ Don't add /uploads/ here
   });
 
   return await newProject.save();
 }
+
+
 
 // Delete a project by ID
 async function deleteProject(id) {
@@ -60,17 +65,21 @@ async function deleteProject(id) {
 }
 
 // Update a project by ID
-async function updateProject(id, name, description, technology, link) {
+async function updateProject(id, name, description, technology, link, imageUrl) {
   await db.connect();
-  return await Project.updateOne(
-    { _id: id },
-    {
-      name,
-      description,
-      technology: technology.split(',').map(item => item.trim()), // Convert comma-separated string to array
-      link
-    }
-  );
+
+  const updateFields = {
+    name,
+    description,
+    technology: technology.split(',').map(item => item.trim()),
+    link
+  };
+
+  if (imageUrl) {
+    updateFields.imageUrl = imageUrl;
+  }
+
+  return await Project.updateOne({ _id: id }, updateFields);
 }
 
 module.exports = {

@@ -1,63 +1,92 @@
 const projectModel = require("./model");
 
 // List all projects and initialize if no projects exist
-const listProject = async (request, response) => {
+const listProject = async (req, res) => {
   let projectData = await projectModel.getProject();
   if (!projectData.length) {
     await projectModel.initializeProject();
     projectData = await projectModel.getProject();
   }
-  response.render("project/list", { projects: projectData });
+  res.render("project/list", { projects: projectData });
 };
-
-
 
 // Show the form to add a new project
-const showAddForm = (request, response) => {
-  response.render("project/addProject");
+const showAddForm = (req, res) => {
+  res.render("project/addProject");
 };
 
-// Add a new project
-const addNewProject = async (request, response) => {
-  const { name, description, technology, link } = request.body;
-  let result = await projectModel.addProject(name, description, technology, link);
-  console.log(result);
-  response.redirect("../list");  // Redirect to the project list after adding
+// Add a new project (with image)
+const addNewProject = async (req, res) => {
+  const { name, description, technology, link } = req.body;
+  const imageUrl = req.file ? `/uploads/${req.file.filename}` : '';
+
+  const result = await projectModel.addProject(name, description, technology, link, imageUrl);
+  console.log("Project added:", result);
+  res.redirect("../list");
 };
 
-// Delete a project by its ID
-const deleteProjectById = async (request, response) => {
-  let id = request.params.id;
-  await projectModel.deleteProject(id);
-  console.log(`Deleted project with ID: ${id}`);
-  response.redirect("../list");  // Redirect to the project list after deletion
-};
+// Delete a project by ID
+const fs = require("fs");
+const path = require("path");
 
-// Show the form to update a project
-const showUpdateForm = async (request, response) => {
-  const projectId = request.params.id;
+const deleteProjectById = async (req, res) => {
+  const projectId = req.params.id;
+
+  // Fetch project first to get the image path
   const project = await projectModel.Project.findById(projectId);
   if (!project) {
-    return response.status(404).send("Project not found.");
+    return res.status(404).send("Project not found.");
   }
-  response.render("project/updateProject", { project });
+
+  // Delete image file from uploads (if it exists)
+  if (project.imageUrl) {
+    const imagePath = path.join(__dirname, "../../..", project.imageUrl); // Adjust path if needed
+    fs.unlink(imagePath, (err) => {
+      if (err) {
+        console.error("❌ Failed to delete image:", err.message);
+      } else {
+        console.log("✅ Image deleted:", imagePath);
+      }
+    });
+  }
+
+  // Then delete the project from the DB
+  await projectModel.deleteProject(projectId);
+  console.log(`✅ Deleted project with ID: ${projectId}`);
+  res.redirect("../list");
 };
-const getProjectAPI = async (request, response) => {
-  let projectList = await projectModel.getProject();
-  response.json(projectList);
+
+
+// Show update project form
+const showUpdateForm = async (req, res) => {
+  const projectId = req.params.id;
+  const project = await projectModel.Project.findById(projectId);
+  if (!project) {
+    return res.status(404).send("Project not found.");
+  }
+  res.render("project/updateProject", { project });
 };
-// Update a project
-const updateProject = async (request, response) => {
-  const projectId = request.params.id;
-  const { name, description, technology, link } = request.body;
-  const result = await projectModel.updateProject(projectId, name, description, technology, link);
+
+// Update project (with optional image)
+const updateProject = async (req, res) => {
+  const projectId = req.params.id;
+  const { name, description, technology, link } = req.body;
+  const imageUrl = req.file ? `/uploads/${req.file.filename}` : null;
+
+  const result = await projectModel.updateProject(projectId, name, description, technology, link, imageUrl);
 
   if (result.modifiedCount === 0) {
-    return response.status(404).send("Project not found or no changes made.");
+    return res.status(404).send("Project not found or no changes made.");
   }
 
   console.log("Project updated:", result);
-  response.redirect("../list");  // Redirect to the project list after updating
+  res.redirect("../list");
+};
+
+// API to return all projects as JSON
+const getProjectAPI = async (req, res) => {
+  let projectList = await projectModel.getProject();
+  res.json(projectList);
 };
 
 module.exports = {

@@ -2,21 +2,28 @@ extends ../common/layout
 
 block layout-content
   .main-content
-    h1.page-title My Skills
-    
-    // Add Skill Button
-    a.btn(href="/skill/add") Add Skill
+    h1.page-title My Projects
 
-    each skill in skills
-      .skill-item
-        h2= skill.name
+    // Add Project Button
+    a.btn(href="/project/add") Add Project
+
+    each project in projects
+      .project-item
+        // ✅ Image preview (if exists)
+        if project.imageUrl
+          img(src=project.imageUrl, alt=project.name, width="300", class="img-thumbnail mb-2")
+
+        h2= project.name
+        p= project.description
+
         p 
-          strong Category: 
-          |  #{skill.category}
+          strong Technologies: 
+          |  #{project.technology.join(', ')}
+
         p 
-          strong Proficiency: 
-          |  #{skill.proficiency}
-      .button-container
-        // Edit & Delete Buttons
-        a.btn-edit(href=`/skill/update/${skill._id}`) Edit
-        a.btn-delete(href=`/skill/delete/${skill._id}`, onclick="return confirm('Are you sure?')") Delete
+          strong Link: 
+          a(href=project.link, target="_blank")= project.link
+
+        .button-container
+          a.btn-edit(href=`/project/update/${project._id}`) Edit
+          a.btn-delete(href=`/project/delete/${project._id}`, onclick="return confirm('Are you sure?')") Delete

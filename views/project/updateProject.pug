@@ -4,7 +4,8 @@ block layout-content
   .main-content
     h1.page-title Update Project
 
-    form(action=`/project/update/${project._id}`, method="POST")
+    // ⚠️ enctype required for file upload
+    form(action=`/project/update/${project._id}`, method="POST", enctype="multipart/form-data")
       .form-group
         label(for="name") Project Name:
         input(type="text", name="name", id="name", value=project.name, required)
@@ -21,6 +22,18 @@ block layout-content
         label(for="link") Project Link:
         input(type="url", name="link", id="link", value=project.link, required)
 
-      button(type="submit") Update Project
+      // ✅ File input to upload new image
+      .form-group
+        label(for="image") Upload New Image:
+        input(type="file", name="image", id="image", accept="image/*")
 
-    a(href="/project") Go back to projects list
+      // ✅ Image preview of existing image (if available)
+      if project.imageUrl
+        .form-group.mt-3
+          label Current Image:
+          br
+          img(src=project.imageUrl, alt="Project Image", width="200", class="img-thumbnail")
+
+      button.btn.btn-primary(type="submit") Update Project
+
+    a.btn.btn-secondary.mt-3(href="/project/list") ← Back to Project List
