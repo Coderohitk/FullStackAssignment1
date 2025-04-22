@@ -17,7 +17,7 @@ const addNewSkill = async (request, response) => {
     const { name, category, proficiency } = request.body;
     let result = await skillModal.addSkill(name, category, proficiency);
     console.log(result);
-    response.redirect("../list",);
+    response.redirect("../skill/list",);
 }
 const getSkillAPI = async (request, response) => {
     let skillList = await skillModal.getSkills();
